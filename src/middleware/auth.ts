@@ -19,8 +19,6 @@ export const authenticate = (req: Request, res: Response, next: NextFunction): v
         const secret = process.env.JWT_SECRET!
         const decoded = jwt.verify(token, secret) as JwtPayload
 
-        console.log('Decoded JWT payload:', decoded)
-
         ;(req as any).userId = decoded.userId
         next()
     } catch (error) {
