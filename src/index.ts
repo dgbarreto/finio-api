@@ -4,6 +4,7 @@ import helmet from 'helmet'
 import dotenv from 'dotenv'
 import { connectToDatabase } from './config/database'
 import path from 'path'
+import authRoutes from './modules/auth/auth.routes'
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') })
 
@@ -22,6 +23,8 @@ app.get('/health', (req, res) => {
         environment: process.env.NODE_ENV
     })
 })
+
+app.use('/auth', authRoutes)
 
 const start = async() => {
     await connectToDatabase()
