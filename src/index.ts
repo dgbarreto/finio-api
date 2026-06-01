@@ -6,6 +6,11 @@ import { connectToDatabase } from './config/database'
 import path from 'path'
 import authRoutes from './modules/auth/auth.routes'
 import transactionRoutes from './modules/transactions/transaction.routes'
+import fs from 'fs'
+
+const envPath = path.resolve(__dirname, '../.env')
+console.log('Looking for .env at:', envPath)
+console.log('File exists:', fs.existsSync(envPath))
 
 console.log('process.env.NODE_ENV:', process.env.NODE_ENV)
 
