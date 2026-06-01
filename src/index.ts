@@ -6,21 +6,10 @@ import { connectToDatabase } from './config/database'
 import path from 'path'
 import authRoutes from './modules/auth/auth.routes'
 import transactionRoutes from './modules/transactions/transaction.routes'
-import fs from 'fs'
-
-const envPath = path.resolve(__dirname, '../.env')
-console.log('Looking for .env at:', envPath)
-console.log('File exists:', fs.existsSync(envPath))
-
-console.log('process.env.NODE_ENV:', process.env.NODE_ENV)
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: path.resolve(__dirname, '../.env') })
-  console.log('Loaded .env file for development')
 }
-
-console.log('NODE_ENV:', process.env.NODE_ENV)
-console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI)
 
 const app = express()
 const port = process.env.PORT || 3000
