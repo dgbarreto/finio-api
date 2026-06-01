@@ -7,6 +7,8 @@ import path from 'path'
 import authRoutes from './modules/auth/auth.routes'
 import transactionRoutes from './modules/transactions/transaction.routes'
 
+console.log('process.env.NODE_ENV:', process.env.NODE_ENV)
+
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: path.resolve(__dirname, '../.env') })
   console.log('Loaded .env file for development')
