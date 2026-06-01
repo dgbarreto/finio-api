@@ -9,7 +9,11 @@ import transactionRoutes from './modules/transactions/transaction.routes'
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: path.resolve(__dirname, '../.env') })
+  console.log('Loaded .env file for development')
 }
+
+console.log('NODE_ENV:', process.env.NODE_ENV)
+console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI)
 
 const app = express()
 const port = process.env.PORT || 3000
