@@ -1,52 +1,49 @@
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import * as authService from './auth.service'
+import { AppError } from '../../errors/AppError'
 
-export const register = async (req: Request, res: Response): Promise<void> => {
+export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const { name, email, password } = req.body
 
         if (!name || !email || !password) {
-            res.status(400).json({ error: 'Name, email, and password are required' })
-            return
+            throw new AppError('Name, email, and password are required', 400)
         }
 
         const result = await authService.register({ name, email, password })
         res.status(201).json(result)
     } catch (error: any) {
         if(error.message === 'Email is already in use') {
-            res.status(409).json({ error: error.message })
-            return
+            throw new AppError(error.message, 409)
         }
-        res.status(500).json({ error: 'Internal server error' })
+        next(error)
     }
 }
 
-export const login = async (req: Request, res: Response): Promise<void> => {
+export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const { email, password } = req.body
 
         if (!email || !password) {
-            res.status(400).json({ error: 'Email and password are required' })
-            return
+            throw new AppError('Email and password are required', 400)
         }
 
         const result = await authService.login({ email, password })
         res.status(200).json(result)
     } catch (error: any) {
         if(error.message === 'Invalid email or password') {
-            res.status(401).json({ error: error.message })
-            return
+            throw new AppError(error.message, 401)
         }
-        res.status(500).json({ error: 'Internal server error' })
+        next(error)
     }
 }
 
-export const profile = async (req: Request, res: Response): Promise<void> => {
+export const profile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const userId = (req as any).userId
         const user = await authService.getProfile(userId)
         res.status(200).json(user)
     } catch (error: any) {
-        res.status(404).json({ error: error.message })
+        next(error)
     }
 }

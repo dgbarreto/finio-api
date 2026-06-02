@@ -6,6 +6,7 @@ import { connectToDatabase } from './config/database'
 import path from 'path'
 import authRoutes from './modules/auth/auth.routes'
 import transactionRoutes from './modules/transactions/transaction.routes'
+import { errorHandler } from './middleware/errorHandler'
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: path.resolve(__dirname, '../.env') })
@@ -29,6 +30,7 @@ app.get('/health', (req, res) => {
 
 app.use('/auth', authRoutes)
 app.use('/transactions', transactionRoutes)
+app.use(errorHandler)
 
 const start = async() => {
     await connectToDatabase()

@@ -1,14 +1,14 @@
-import { Request, Response } from "express"
+import { Request, Response, NextFunction } from "express"
 import * as transactionService from "./transaction.service"
+import { AppError } from "../../errors/AppError"
 
-export const create = async (req: Request, res: Response): Promise<void> => {
+export const create = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const userId = (req as any).userId
         const { description, amount, category, type, date, notes } = req.body
 
         if(!description || !amount || !category || !type ){
-            res.status(400).json({ message: "Missing required fields" })
-            return
+            throw new AppError("Missing required fields", 400)
         }
 
         const transaction = await transactionService.createTransaction({
@@ -23,11 +23,11 @@ export const create = async (req: Request, res: Response): Promise<void> => {
 
         res.status(201).json(transaction)
     } catch (error: any) {
-        res.status(500).json({ message: error.message })
+        next(error)
     }
 }
 
-export const getAll = async (req: Request, res: Response): Promise<void> => {
+export const getAll = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try{
         const userId = (req as any).userId
         const { category, type, startDate, endDate } = req.query
@@ -42,11 +42,11 @@ export const getAll = async (req: Request, res: Response): Promise<void> => {
 
         res.status(200).json(transactions)
     } catch (error: any) {
-        res.status(500).json({ message: error.message })
+        next(error)
     }
 }
 
-export const getById = async (req: Request, res: Response): Promise<void> => {
+export const getById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try{
         const userId = (req as any).userId
         const { id } = req.params
@@ -54,17 +54,16 @@ export const getById = async (req: Request, res: Response): Promise<void> => {
         const transaction = await transactionService.getTransactionById(id as string, userId)
 
         if(!transaction){
-            res.status(404).json({ message: "Transaction not found" })
-            return
+            throw new AppError("Transaction not found", 404)
         }
 
         res.status(200).json(transaction)
     } catch (error: any) {
-        res.status(500).json({ message: error.message })
+        next(error)
     }
 }
 
-export const update = async (req: Request, res: Response): Promise<void> => {
+export const update = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try{
         const userId = (req as any).userId
         const { id } = req.params
@@ -76,17 +75,16 @@ export const update = async (req: Request, res: Response): Promise<void> => {
         )
 
         if(!transaction){
-            res.status(404).json({ message: "Transaction not found" })
-            return
+            throw new AppError("Transaction not found", 404)
         }
 
         res.status(200).json(transaction)
     } catch (error: any) {
-        res.status(500).json({ message: error.message })
+        next(error)
     }
 }
 
-export const remove = async (req: Request, res: Response): Promise<void> => {
+export const remove = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try{
         const userId = (req as any).userId
         const { id } = req.params
@@ -94,22 +92,21 @@ export const remove = async (req: Request, res: Response): Promise<void> => {
         const deleted = await transactionService.deleteTransaction(id as string, userId)
 
         if(!deleted){
-            res.status(404).json({ message: "Transaction not found" })
-            return
+            throw new AppError("Transaction not found", 404)
         }
 
         res.status(204).send()
     } catch (error: any) {
-        res.status(500).json({ message: error.message })
+        next(error)
     }
 }
 
-export const summary = async (req: Request, res: Response): Promise<void> => {
+export const summary = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try{
         const userId = (req as any).userId
         const result = await transactionService.getSummary(userId)
         res.status(200).json(result)
     } catch (error: any) {
-        res.status(500).json({ message: error.message })
+        next(error)
     }
 }
