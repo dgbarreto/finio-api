@@ -3,11 +3,12 @@ import cors from 'cors'
 import helmet from 'helmet'
 import dotenv from 'dotenv'
 import { connectToDatabase } from './config/database'
+import { errorHandler } from './middleware/errorHandler'
 import path from 'path'
 import authRoutes from './modules/auth/auth.routes'
 import transactionRoutes from './modules/transactions/transaction.routes'
 import budgetRoutes from './modules/budget/budget.router'
-import { errorHandler } from './middleware/errorHandler'
+import insightsRoutes from './modules/insights/insights.router'
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: path.resolve(__dirname, '../.env') })
@@ -32,6 +33,8 @@ app.get('/health', (req, res) => {
 app.use('/auth', authRoutes)
 app.use('/transactions', transactionRoutes)
 app.use('/budgets', budgetRoutes)
+app.use('/insights', insightsRoutes)
+
 app.use(errorHandler)
 
 const start = async() => {
