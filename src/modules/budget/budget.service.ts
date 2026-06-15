@@ -63,6 +63,7 @@ export const getBudgetsWithProgress = async (userId: string): Promise<BudgetWith
             return {
                 ...budget.toObject(),
                 _id: budget._id.toString(),
+                startDate: budget.startDate,
                 spent,
                 remaining,
                 percentage,
