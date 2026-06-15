@@ -17,6 +17,7 @@ const BudgetSchema: Schema = new Schema<IBudget>(
         category: { type: String, required: true },
         limit: { type: Number, required: true },
         period: { type: String, enum: ['weekly', 'monthly'], required: true },
+        startDate: { type: Date, required: true },
         endDate: { type: Date, required: true }
     },
     { timestamps: true }
