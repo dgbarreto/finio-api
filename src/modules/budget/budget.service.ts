@@ -20,7 +20,7 @@ interface BudgetWithProgress{
 export const createBudget = async (
     userId: string,
     data: Partial<IBudget>
-): Promise<IBudget> => {
+): Promise<BudgetWithProgress> => {
     const existingBudget = await Budget.findOne({
         userId,
         category: data.category,
@@ -32,7 +32,7 @@ export const createBudget = async (
         throw new AppError("Budget for this category and period already exists", 409)
     }
 
-    return Budget.create({ ...data, userId })
+    return await getBudgetWithProgress(await Budget.create({ ...data, userId }))
 }
 
 export const getBudgetsWithProgress = async (userId: string): Promise<BudgetWithProgress[]> => {
@@ -40,39 +40,43 @@ export const getBudgetsWithProgress = async (userId: string): Promise<BudgetWith
 
     const budgetsWithProgress = await Promise.all(
         budgets.map(async (budget) => {
-            const result = await Transaction.aggregate([
-                {
-                    $match: {
-                        userId: budget.userId,
-                        category: budget.category,
-                        date: { $gte: budget.startDate, $lte: budget.endDate }
-                    }
-                },
-                {
-                    $group: {
-                        _id: null,
-                        total: { $sum: "$amount" }
-                    }
-                }
-            ])
-
-            const spent = result[0]?.total || 0
-            const remaining = budget.limit - spent
-            const percentage = Math.round((spent / budget.limit) * 100)
-
-            return {
-                ...budget.toObject(),
-                _id: budget._id.toString(),
-                startDate: budget.startDate,
-                spent,
-                remaining,
-                percentage,
-                exceeded: spent > budget.limit
-            }
+            return getBudgetWithProgress(budget)
         })
     )
 
     return budgetsWithProgress
+}
+
+const getBudgetWithProgress = async (budget: IBudget): Promise<BudgetWithProgress> => {
+    const result = await Transaction.aggregate([
+        {
+            $match: {
+                userId: budget.userId,
+                category: budget.category,
+                date: { $gte: budget.startDate, $lte: budget.endDate }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: { $sum: "$amount" }
+            }
+        }
+    ])
+
+    const spent = result[0]?.total || 0
+    const remaining = budget.limit - spent
+    const percentage = Math.round((spent / budget.limit) * 100)
+
+    return {
+        ...budget.toObject(),
+        _id: budget._id.toString(),
+        startDate: budget.startDate,
+        spent,
+        remaining,
+        percentage,
+        exceeded: spent > budget.limit
+    }
 }
 
 export const updateBudget = async (
@@ -90,7 +94,7 @@ export const updateBudget = async (
         throw new AppError("Budget not found", 404)
     }
 
-    return budget
+    return getBudgetWithProgress(budget)
 }
 
 export const deleteBudget = async (
