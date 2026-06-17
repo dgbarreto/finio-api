@@ -14,7 +14,7 @@ interface LoginInput{
 
 interface AuthResult{
     user: {
-        id: string
+        _id: string
         name: string
         email: string
     }
@@ -43,7 +43,7 @@ export const register = async (input: RegisterInput): Promise<AuthResult> => {
 
     return {
         user: {
-            id: user.id,
+            _id: user.id,
             name: user.name,
             email: user.email
         },
@@ -66,7 +66,7 @@ export const login = async (input: LoginInput): Promise<AuthResult> => {
 
     return {
         user: {
-            id: user.id,
+            _id: user.id,
             name: user.name,
             email: user.email
         },
