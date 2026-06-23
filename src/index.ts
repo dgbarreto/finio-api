@@ -1,3 +1,4 @@
+import "./instruments"
 import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
@@ -30,10 +31,15 @@ app.get('/health', (req, res) => {
     })
 })
 
+app.get("/debug-sentry", async(request, reply) => {
+    throw new Error("Sentry test error from finio-api")
+})
+
 app.use('/auth', authRoutes)
 app.use('/transactions', transactionRoutes)
 app.use('/budgets', budgetRoutes)
 app.use('/insights', insightsRoutes)
+
 
 app.use(errorHandler)
 

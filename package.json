@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/dgbarreto/finio-api#readme",
   "dependencies": {
+    "@sentry/node": "^10.60.0",
     "@types/jsonwebtoken": "^9.0.10",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
