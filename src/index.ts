@@ -2,18 +2,13 @@ import "./instruments"
 import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
-import dotenv from 'dotenv'
 import { connectToDatabase } from './config/database'
 import { errorHandler } from './middleware/errorHandler'
-import path from 'path'
 import authRoutes from './modules/auth/auth.routes'
 import transactionRoutes from './modules/transactions/transaction.routes'
 import budgetRoutes from './modules/budget/budget.router'
 import insightsRoutes from './modules/insights/insights.router'
 
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config({ path: path.resolve(__dirname, '../.env') })
-}
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -31,8 +26,8 @@ app.get('/health', (req, res) => {
     })
 })
 
-app.get("/debug-sentry", async(request, reply) => {
-    throw new Error("Sentry test error from finio-api")
+app.get("/debug-sentry", async(req, res, next) => {
+    next(new Error("Sentry test error from finio-api"))
 })
 
 app.use('/auth', authRoutes)
