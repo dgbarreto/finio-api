@@ -88,4 +88,5 @@ export const updateFcmToken = async (userId: string, fcmToken: string) => {
         { $set: { fcmToken: fcmToken } },
         { new: true }
     )
+    return user
 }
