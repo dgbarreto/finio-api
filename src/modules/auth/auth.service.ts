@@ -81,3 +81,11 @@ export const getProfile = async (userId: string) => {
     }
     return user
 }
+
+export const updateFcmToken = async (userId: string, fcmToken: string) => {
+    const user = await User.findOneAndUpdate(
+        { _id: userId }, 
+        { $set: { fcmToken: fcmToken } },
+        { new: true }
+    )
+}

@@ -9,5 +9,6 @@ const router = Router()
 router.post('/register', validate(registerSchema), authController.register)
 router.post('/login', validate(loginSchema), authController.login)
 router.get('/profile', authenticate, authController.profile)
+router.post('fcm-token', authenticate, authController.updateFcmToken)
 
 export default router

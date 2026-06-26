@@ -5,6 +5,7 @@ export interface IUser extends Document {
     name: string
     email: string
     password: string
+    fcmToken?: string
     createdAt: Date
     comparePassword(candidatePassword: string): Promise<boolean>
 }
@@ -29,6 +30,10 @@ const UserSchema = new Schema<IUser>(
             type: String,
             required: [true, 'Password is required'],
             minlength: [6, 'Password must be at least 6 characters long']
+        },
+        fcmToken: {
+            type: String,
+            required: false
         }
     },
     {

@@ -47,3 +47,14 @@ export const profile = async (req: Request, res: Response, next: NextFunction): 
         next(error)
     }
 }
+
+export const updateFcmToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try{
+        const userId = (req as any).userId
+        const fcmToken = req.body
+        const user = await authService.updateFcmToken(userId, fcmToken)
+        res.status(200).json(user)
+    } catch(err: any){
+        next(err)
+    }
+}

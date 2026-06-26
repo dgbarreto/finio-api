@@ -2,6 +2,8 @@ import { Budget, IBudget } from "./budget.model"
 import { Transaction } from "../transactions/transaction.model"
 import { AppError } from "../../errors/AppError"
 import mongoose from "mongoose"
+import { User } from "../auth/auth.model"
+import { NotificationService } from "../../services/NotificationService"
 
 interface BudgetWithProgress{
     _id: string,
@@ -67,6 +69,17 @@ const getBudgetWithProgress = async (budget: IBudget): Promise<BudgetWithProgres
     const spent = result[0]?.total || 0
     const remaining = budget.limit - spent
     const percentage = Math.round((spent / budget.limit) * 100)
+
+    if(percentage >= 80){
+        const user = await User.findById(budget.userId)
+        if(user?.fcmToken){
+            await NotificationService.sendBudgetAlert(
+                user.fcmToken,
+                budget.category,
+                percentage
+            )
+        }
+    }
 
     return {
         ...budget.toObject(),
