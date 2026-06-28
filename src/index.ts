@@ -8,7 +8,7 @@ import authRoutes from './modules/auth/auth.routes'
 import transactionRoutes from './modules/transactions/transaction.routes'
 import budgetRoutes from './modules/budget/budget.router'
 import insightsRoutes from './modules/insights/insights.router'
-
+import debugRoutes from './modules/debug/debug.routes'
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -35,6 +35,7 @@ app.use('/transactions', transactionRoutes)
 app.use('/budgets', budgetRoutes)
 app.use('/insights', insightsRoutes)
 
+app.use('/debug', debugRoutes)
 
 app.use(errorHandler)
 
