@@ -9,10 +9,6 @@ export class NotificationService{
         try{
             await messaging.send({
                 token: fcmToken,
-                notification: {
-                    title: "Budget Alert 🚨",
-                    body: "You've used ${percentage}% of your ${category} budget"
-                },
                 data: {
                     type: "budget_alert",
                     category,
